@@ -5,13 +5,12 @@
 
 from contextlib import contextmanager, suppress
 
+from odoo.tools import mute_logger
+from odoo.tests.common import TransactionCase, Form
+from odoo.exceptions import UserError, ValidationError, MissingError
 import mock
 from freezegun import freeze_time
 from werkzeug.exceptions import NotAcceptable
-
-from odoo.exceptions import MissingError, UserError, ValidationError
-from odoo.tests.common import Form, TransactionCase
-from odoo.tools import mute_logger
 
 from ..controllers.main import MailTrackingController
 
@@ -22,7 +21,7 @@ except ImportError:
     MockRequest = None
 
 
-_packagepath = "odoo.addons.mail_tracking_mailgun"
+_packagepath = 'odoo.addons.mail_tracking_mailgun'
 
 
 @freeze_time("2016-08-12 17:00:00", tick=True)
@@ -39,16 +38,16 @@ class TestMailgun(TransactionCase):
         )
         mail.send()
         # Search tracking created
-        tracking_email = self.env["mail.tracking.email"].search(
-            [("mail_id", "=", mail.id)]
-        )
+        tracking_email = self.env['mail.tracking.email'].search([
+            ('mail_id', '=', mail.id),
+        ])
         return mail, tracking_email
 
     def setUp(self):
-        super().setUp()
-        self.recipient = "to@example.com"
+        super(TestMailgun, self).setUp()
+        self.recipient = 'to@example.com'
         self.mail, self.tracking_email = self.mail_send()
-        self.domain = "example.com"
+        self.domain = 'example.com'
         # Configure Mailgun through GUI
         cf = Form(self.env["res.config.settings"])
         cf.mail_tracking_mailgun_enabled = True
@@ -57,18 +56,14 @@ class TestMailgun(TransactionCase):
         ) = (
             cf.mail_tracking_mailgun_validation_key
         ) = "key-12345678901234567890123456789012"
+        cf.alias_domain = self.domain
         cf.mail_tracking_mailgun_domain = False
         cf.mail_tracking_mailgun_auto_check_partner_emails = False
-        config = cf.save()
-        # Done this way as `hr_expense` adds this field again as readonly, and thus Form
-        # doesn't process it correctly
-        config.alias_domain = self.domain
-        config.execute()
-        self.token = "f1349299097a51b9a7d886fcb5c2735b426ba200ada6e9e149"
-        self.timestamp = "1471021089"
-        self.signature = (
-            "4fb6d4dbbe10ce5d620265dcd7a3c0b8" "ca0dede1433103891bc1ae4086e9d5b2"
-        )
+        cf.save().execute()
+        self.token = 'f1349299097a51b9a7d886fcb5c2735b426ba200ada6e9e149'
+        self.timestamp = '1471021089'
+        self.signature = ('4fb6d4dbbe10ce5d620265dcd7a3c0b8'
+                          'ca0dede1433103891bc1ae4086e9d5b2')
         self.event = {
             "log-level": "info",
             "id": "oXAVv5URCF-dKv8c6Sa7T",
@@ -89,13 +84,16 @@ class TestMailgun(TransactionCase):
             },
         }
         self.metadata = {
-            "ip": "127.0.0.1",
-            "user_agent": False,
-            "os_family": False,
-            "ua_family": False,
+            'ip': '127.0.0.1',
+            'user_agent': False,
+            'os_family': False,
+            'ua_family': False,
         }
         self.partner = self.env["res.partner"].create(
-            {"name": "Mr. Odoo", "email": "mrodoo@example.com"}
+            {
+                "name": "Mr. Odoo",
+                "email": "mrodoo@example.com",
+            }
         )
         self.response = {"items": [self.event]}
         self.MailTrackingController = MailTrackingController()
@@ -124,39 +122,44 @@ class TestMailgun(TransactionCase):
             yield request
 
     def event_search(self, event_type):
-        event = self.env["mail.tracking.event"].search(
-            [
-                ("tracking_email_id", "=", self.tracking_email.id),
-                ("event_type", "=", event_type),
-            ]
-        )
+        event = self.env['mail.tracking.event'].search([
+            ('tracking_email_id', '=', self.tracking_email.id),
+            ('event_type', '=', event_type),
+        ])
         self.assertTrue(event)
         return event
 
     def test_no_api_key(self):
-        self.env["ir.config_parameter"].set_param("mailgun.apikey", "")
+        self.env['ir.config_parameter'].set_param('mailgun.apikey', '')
         with self.assertRaises(ValidationError):
-            self.env["mail.tracking.email"]._mailgun_values()
+            self.env['mail.tracking.email']._mailgun_values()
 
     def test_no_domain(self):
-        self.env["ir.config_parameter"].set_param("mail.catchall.domain", "")
+        self.env['ir.config_parameter'].set_param('mail.catchall.domain', '')
         with self.assertRaises(ValidationError):
-            self.env["mail.tracking.email"]._mailgun_values()
+            self.env['mail.tracking.email']._mailgun_values()
         # now we set an specific domain for Mailgun:
         # i.e: we configure new EU zone without loosing old domain statistics
-        self.env["ir.config_parameter"].set_param("mailgun.domain", "eu.example.com")
+        self.env['ir.config_parameter'].set_param(
+            'mailgun.domain', 'eu.example.com')
         self.test_event_delivered()
 
-    @mute_logger("odoo.addons.mail_tracking_mailgun.models.mail_tracking_email")
+    @mute_logger('odoo.addons.mail_tracking_mailgun.models'
+                 '.mail_tracking_email')
     def test_bad_signature(self):
         self.signature = "bad_signature"
         with self._request_mock(), self.assertRaises(NotAcceptable):
             self.MailTrackingController.mail_tracking_mailgun_webhook()
 
-    @mute_logger("odoo.addons.mail_tracking_mailgun.models.mail_tracking_email")
+    @mute_logger('odoo.addons.mail_tracking_mailgun.models'
+                 '.mail_tracking_email')
     def test_bad_event_type(self):
         old_events = self.tracking_email.tracking_event_ids
-        self.event.update({"event": "bad_event"})
+        self.event.update(
+            {
+                "event": "bad_event",
+            }
+        )
         with self._request_mock():
             self.MailTrackingController.mail_tracking_mailgun_webhook()
         self.assertFalse(self.tracking_email.tracking_event_ids - old_events)
@@ -169,7 +172,8 @@ class TestMailgun(TransactionCase):
         with self._request_mock(), self.assertRaises(ValueError):
             self.MailTrackingController.mail_tracking_mailgun_webhook()
 
-    @mute_logger("odoo.addons.mail_tracking_mailgun.models.mail_tracking_email")
+    @mute_logger('odoo.addons.mail_tracking_mailgun.models'
+                 '.mail_tracking_email')
     def test_tracking_not_found(self):
         self.event.update(
             {
@@ -199,7 +203,11 @@ class TestMailgun(TransactionCase):
 
     # https://documentation.mailgun.com/en/latest/user_manual.html#tracking-deliveries
     def test_event_delivered(self):
-        self.event.update({"event": "delivered"})
+        self.event.update(
+            {
+                "event": "delivered",
+            }
+        )
         with self._request_mock():
             self.MailTrackingController.mail_tracking_mailgun_webhook()
         events = self.event_search("delivered")
@@ -239,7 +247,7 @@ class TestMailgun(TransactionCase):
         self.assertEqual(event.ua_family, ua_family)
         self.assertEqual(event.ua_type, ua_type)
         self.assertEqual(event.mobile, False)
-        self.assertEqual(event.user_country_id.code, "US")
+        self.assertEqual(event.user_country_id.code, 'US')
 
     # https://documentation.mailgun.com/en/latest/user_manual.html#tracking-clicks
     def test_event_clicked(self):
@@ -312,21 +320,23 @@ class TestMailgun(TransactionCase):
 
     # https://documentation.mailgun.com/en/latest/user_manual.html#tracking-spam-complaints
     def test_event_complained(self):
-        self.event.update({"event": "complained"})
+        self.event.update(
+            {
+                "event": "complained",
+            }
+        )
         with self._request_mock():
             self.MailTrackingController.mail_tracking_mailgun_webhook()
         event = self.event_search("spam")
         self.assertEqual(event.timestamp, float(self.timestamp))
         self.assertEqual(event.recipient, self.recipient)
-        self.assertEqual(event.error_type, "spam")
+        self.assertEqual(event.error_type, 'spam')
 
     # https://documentation.mailgun.com/en/latest/user_manual.html#tracking-bounces
     def test_event_failed(self):
         code = 550
-        error = (
-            "5.1.1 The email account does not exist.\n"
-            "5.1.1 double-checking the recipient's email address"
-        )
+        error = ("5.1.1 The email account does not exist.\n"
+                 "5.1.1 double-checking the recipient's email address")
         notification = "Please, check recipient's email address"
         self.event.update(
             {
@@ -356,7 +366,10 @@ class TestMailgun(TransactionCase):
         self.event.update(
             {
                 "event": "rejected",
-                "reject": {"reason": reason, "description": description},
+                "reject": {
+                    "reason": reason,
+                    "description": description,
+                },
             }
         )
         with self._request_mock():
@@ -368,55 +381,54 @@ class TestMailgun(TransactionCase):
         self.assertEqual(event.error_description, reason)
         self.assertEqual(event.error_details, description)
 
-    @mock.patch(_packagepath + ".models.res_partner.requests")
+    @mock.patch(_packagepath + '.models.res_partner.requests')
     def test_email_validity(self, mock_request):
         self.partner.email_bounced = False
-        mock_request.get.return_value.apparent_encoding = "ascii"
+        mock_request.get.return_value.apparent_encoding = 'ascii'
         mock_request.get.return_value.status_code = 200
         mock_request.get.return_value.json.return_value = {
-            "is_valid": True,
-            "mailbox_verification": "true",
+            'is_valid': True,
+            'mailbox_verification': 'true',
         }
         # Trigger email auto validation in partner
-        self.env["ir.config_parameter"].set_param(
-            "mailgun.auto_check_partner_email", "True"
-        )
-        self.partner.email = "info@tecnativa.com"
+        self.env['ir.config_parameter'].set_param(
+            'mailgun.auto_check_partner_email', 'True')
+        self.partner.email = 'info@tecnativa.com'
         self.assertFalse(self.partner.email_bounced)
-        self.partner.email = "xoxoxoxo@tecnativa.com"
+        self.partner.email = 'xoxoxoxo@tecnativa.com'
         # Not a valid mailbox
         mock_request.get.return_value.json.return_value = {
-            "is_valid": True,
-            "mailbox_verification": "false",
+            'is_valid': True,
+            'mailbox_verification': 'false',
         }
         with self.assertRaises(UserError):
             self.partner.check_email_validity()
         # Not a valid mail address
         mock_request.get.return_value.json.return_value = {
-            "is_valid": False,
-            "mailbox_verification": "false",
+            'is_valid': False,
+            'mailbox_verification': 'false',
         }
         with self.assertRaises(UserError):
             self.partner.check_email_validity()
         # Unable to fully validate
         mock_request.get.return_value.json.return_value = {
-            "is_valid": True,
-            "mailbox_verification": "unknown",
+            'is_valid': True,
+            'mailbox_verification': 'unknown',
         }
         with self.assertRaises(UserError):
             self.partner.check_email_validity()
         self.assertTrue(self.partner.email_bounced)
 
-    @mock.patch(_packagepath + ".models.res_partner.requests")
+    @mock.patch(_packagepath + '.models.res_partner.requests')
     def test_email_validity_exceptions(self, mock_request):
         mock_request.get.return_value.status_code = 404
         with self.assertRaises(UserError):
             self.partner.check_email_validity()
-        self.env["ir.config_parameter"].set_param("mailgun.validation_key", "")
+        self.env['ir.config_parameter'].set_param('mailgun.validation_key', '')
         with self.assertRaises(UserError):
             self.partner.check_email_validity()
 
-    @mock.patch(_packagepath + ".models.res_partner.requests")
+    @mock.patch(_packagepath + '.models.res_partner.requests')
     def test_bounced(self, mock_request):
         self.partner.email_bounced = True
         mock_request.get.return_value.status_code = 404
@@ -432,24 +444,23 @@ class TestMailgun(TransactionCase):
 
     def test_email_bounced_set(self):
         message_number = len(self.partner.message_ids) + 1
-        self.partner._email_bounced_set("test_error", False)
+        self.partner._email_bounced_set('test_error', False)
         self.assertEqual(len(self.partner.message_ids), message_number)
         self.partner.email = ""
-        self.partner._email_bounced_set("test_error", False)
+        self.partner._email_bounced_set('test_error', False)
         self.assertEqual(len(self.partner.message_ids), message_number)
 
-    @mock.patch(_packagepath + ".models.mail_tracking_email.requests")
+    @mock.patch(_packagepath + '.models.mail_tracking_email.requests')
     def test_manual_check(self, mock_request):
         mock_request.get.return_value.json.return_value = self.response
         mock_request.get.return_value.status_code = 200
         self.tracking_email.action_manual_check_mailgun()
-        event = self.env["mail.tracking.event"].search(
-            [("mailgun_id", "=", self.response["items"][0]["id"])]
-        )
+        event = self.env['mail.tracking.event'].search(
+            [('mailgun_id', '=', self.response['items'][0]['id'])])
         self.assertTrue(event)
-        self.assertEqual(event.event_type, self.response["items"][0]["event"])
+        self.assertEqual(event.event_type, self.response['items'][0]['event'])
 
-    @mock.patch(_packagepath + ".models.mail_tracking_email.requests")
+    @mock.patch(_packagepath + '.models.mail_tracking_email.requests')
     def test_manual_check_exceptions(self, mock_request):
         mock_request.get.return_value.status_code = 404
         with self.assertRaises(UserError):

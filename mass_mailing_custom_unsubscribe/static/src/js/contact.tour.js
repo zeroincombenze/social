@@ -1,13 +1,16 @@
 /* Copyright 2016 Jairo Llopis <jairo.llopis@tecnativa.com>
  * License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). */
-odoo.define("mass_mailing_custom_unsubscribe.contact_tour", (require) => {
+odoo.define("mass_mailing_custom_unsubscribe.contact_tour",
+            function (require) {
     "use strict";
-    const base = require("web_editor.base");
-    const tour = require("web_tour.tour");
+    var base = require("web_editor.base");
+    var tour = require("web_tour.tour");
 
     // Allow to know if an element is required
-    $.extend($.expr[":"], {
-        propRequired: (element) => $(element).prop("required"),
+    $.extend($.expr[':'], {
+        propRequired: function(element, index, matches) {
+           return $(element).prop("required");
+        },
     });
 
     tour.register(
@@ -24,7 +27,7 @@ odoo.define("mass_mailing_custom_unsubscribe.contact_tour", (require) => {
             },
             {
                 content: "Switch to not interested reason",
-                trigger: '.radio:contains("I\'m not interested") :radio:not(:checked)',
+                trigger: ".radio:contains(\"I'm not interested\") :radio:not(:checked)",
                 extra_trigger: "[name='details']:propRequired",
             },
             {
@@ -34,9 +37,8 @@ odoo.define("mass_mailing_custom_unsubscribe.contact_tour", (require) => {
             },
             {
                 content: "Successfully unsubscribed",
-                trigger:
-                    "body:not(:has(#reason_form)) #subscription_info " +
-                    ":contains('successfully unsubscribed from')",
+                trigger: "body:not(:has(#reason_form)) #subscription_info " +
+                         ":contains('successfully unsubscribed from')",
             },
             {
                 content: "Unsubscription reasons are invisible",
@@ -57,7 +59,8 @@ odoo.define("mass_mailing_custom_unsubscribe.contact_tour", (require) => {
             {
                 content: "Choose other reason",
                 trigger: ".radio:contains('Other reason') :radio",
-                extra_trigger: ".radio:contains('Other reason') :radio:not(:checked)",
+                extra_trigger: ".radio:contains('Other reason') " +
+                               ":radio:not(:checked)",
             },
             {
                 content: "Add details to reason",
@@ -75,13 +78,11 @@ odoo.define("mass_mailing_custom_unsubscribe.contact_tour", (require) => {
             },
             {
                 content: "Subscribe again to list 0",
-                trigger:
-                    "body:not(:has(#unsubscribe_form #custom_div_feedback:visible)):has(.alert-success) li:contains('test list 0') input:not(:checked)",
+                trigger: "body:not(:has(#unsubscribe_form #custom_div_feedback:visible)):has(.alert-success) li:contains('test list 0') input:not(:checked)",
             },
             {
                 content: "Update subscriptions 3nd time",
-                trigger:
-                    "#unsubscribe_form:not(:has(.js_unsubscription_reason:visible)) :submit",
+                trigger: "#unsubscribe_form:not(:has(.js_unsubscription_reason:visible)) :submit",
             },
             {
                 content: "Successfully subscribed",

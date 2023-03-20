@@ -10,26 +10,25 @@ msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-01 02:19+0000\n"
-"PO-Revision-Date: 2023-01-03 12:46+0000\n"
-"Last-Translator: Francesco Foresti <francesco.foresti@ooops404.com>\n"
+"PO-Revision-Date: 2017-12-01 02:19+0000\n"
+"Last-Translator: OCA Transbot <transbot@odoo-community.org>, 2017\n"
 "Language-Team: Italian (https://www.transifex.com/oca/teams/23907/it/)\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: mail_tracking_mailgun
-#: code:addons/mail_tracking_mailgun/models/res_partner.py:0
+#: code:addons/mail_tracking_mailgun/models/res_partner.py:92
 #, python-format
 msgid ""
-"%s couldn't be verified. Either the request couln't be completed or the "
+"%s couldn't be verified. Either the request couldn't be completed or the "
 "mailbox provider doesn't support email verification"
 msgstr ""
 
 #. module: mail_tracking_mailgun
-#: code:addons/mail_tracking_mailgun/models/res_partner.py:0
+#: code:addons/mail_tracking_mailgun/models/res_partner.py:82
 #, python-format
 msgid ""
 "%s failed the mailbox verification. Please check it in order to avoid "
@@ -37,7 +36,7 @@ msgid ""
 msgstr ""
 
 #. module: mail_tracking_mailgun
-#: code:addons/mail_tracking_mailgun/models/res_partner.py:0
+#: code:addons/mail_tracking_mailgun/models/res_partner.py:73
 #, python-format
 msgid ""
 "%s is not a valid email address. Please check it in order to avoid sending "
@@ -45,7 +44,7 @@ msgid ""
 msgstr ""
 
 #. module: mail_tracking_mailgun
-#: code:addons/mail_tracking_mailgun/models/mail_tracking_email.py:0
+#: code:addons/mail_tracking_mailgun/models/mail_tracking_email.py:82
 #, python-format
 msgid "A Mailgun domain value is needed!"
 msgstr ""
@@ -73,7 +72,7 @@ msgstr ""
 #. module: mail_tracking_mailgun
 #: model:ir.model,name:mail_tracking_mailgun.model_res_config_settings
 msgid "Config Settings"
-msgstr "Impostazioni configurazione"
+msgstr ""
 
 #. module: mail_tracking_mailgun
 #: model_terms:ir.ui.view,arch_db:mail_tracking_mailgun.res_config_settings_view_form
@@ -83,29 +82,16 @@ msgstr ""
 #. module: mail_tracking_mailgun
 #: model:ir.model,name:mail_tracking_mailgun.model_res_partner
 msgid "Contact"
-msgstr "Contatto"
+msgstr ""
 
 #. module: mail_tracking_mailgun
-#: code:addons/mail_tracking_mailgun/models/mail_tracking_email.py:0
+#: code:addons/mail_tracking_mailgun/models/mail_tracking_email.py:222
 #, python-format
 msgid "Couldn't retrieve Mailgun information"
 msgstr ""
 
 #. module: mail_tracking_mailgun
-#: model:ir.model.fields,field_description:mail_tracking_mailgun.field_ir_mail_server__display_name
-#: model:ir.model.fields,field_description:mail_tracking_mailgun.field_mail_tracking_event__display_name
-#: model:ir.model.fields,field_description:mail_tracking_mailgun.field_res_config_settings__display_name
-#: model:ir.model.fields,field_description:mail_tracking_mailgun.field_res_partner__display_name
-msgid "Display Name"
-msgstr "Nome da visualizzare"
-
-#. module: mail_tracking_mailgun
-#: model:ir.model.fields,field_description:mail_tracking_mailgun.field_mail_tracking_email__display_name
-msgid "Display name"
-msgstr "Nome visualizzato"
-
-#. module: mail_tracking_mailgun
-#: code:addons/mail_tracking_mailgun/models/res_partner.py:0
+#: code:addons/mail_tracking_mailgun/models/res_partner.py:34
 #, python-format
 msgid ""
 "Email has been bounced: %s\n"
@@ -124,25 +110,16 @@ msgid "Enable to enhance mail tracking with Mailgun"
 msgstr ""
 
 #. module: mail_tracking_mailgun
-#: code:addons/mail_tracking_mailgun/models/res_partner.py:0
+#: code:addons/mail_tracking_mailgun/models/res_partner.py:60
 #, python-format
 msgid "Error %s trying to check mailof connection"
 msgstr ""
 
 #. module: mail_tracking_mailgun
-#: code:addons/mail_tracking_mailgun/models/mail_tracking_email.py:0
+#: code:addons/mail_tracking_mailgun/models/mail_tracking_email.py:231
 #, python-format
 msgid "Event information not longer stored"
 msgstr ""
-
-#. module: mail_tracking_mailgun
-#: model:ir.model.fields,field_description:mail_tracking_mailgun.field_ir_mail_server__id
-#: model:ir.model.fields,field_description:mail_tracking_mailgun.field_mail_tracking_email__id
-#: model:ir.model.fields,field_description:mail_tracking_mailgun.field_mail_tracking_event__id
-#: model:ir.model.fields,field_description:mail_tracking_mailgun.field_res_config_settings__id
-#: model:ir.model.fields,field_description:mail_tracking_mailgun.field_res_partner__id
-msgid "ID"
-msgstr "ID"
 
 #. module: mail_tracking_mailgun
 #: model_terms:ir.ui.view,arch_db:mail_tracking_mailgun.res_config_settings_view_form
@@ -156,15 +133,6 @@ msgstr ""
 #: model:ir.model.fields,help:mail_tracking_mailgun.field_res_config_settings__mail_tracking_mailgun_validation_key
 msgid "Key used to validate emails."
 msgstr ""
-
-#. module: mail_tracking_mailgun
-#: model:ir.model.fields,field_description:mail_tracking_mailgun.field_ir_mail_server____last_update
-#: model:ir.model.fields,field_description:mail_tracking_mailgun.field_mail_tracking_email____last_update
-#: model:ir.model.fields,field_description:mail_tracking_mailgun.field_mail_tracking_event____last_update
-#: model:ir.model.fields,field_description:mail_tracking_mailgun.field_res_config_settings____last_update
-#: model:ir.model.fields,field_description:mail_tracking_mailgun.field_res_partner____last_update
-msgid "Last Modified on"
-msgstr "Ultima modifica il"
 
 #. module: mail_tracking_mailgun
 #: model:ir.model.fields,help:mail_tracking_mailgun.field_res_config_settings__mail_tracking_mailgun_webhooks_domain
@@ -221,7 +189,7 @@ msgid "Mailgun API key"
 msgstr ""
 
 #. module: mail_tracking_mailgun
-#: code:addons/mail_tracking_mailgun/models/res_partner.py:0
+#: code:addons/mail_tracking_mailgun/models/res_partner.py:67
 #, python-format
 msgid "Mailgun Error. Mailbox verification value wasn't returned"
 msgstr ""
@@ -237,7 +205,7 @@ msgid "Mailgun domain"
 msgstr ""
 
 #. module: mail_tracking_mailgun
-#: model:ir.model.constraint,message:mail_tracking_mailgun.constraint_mail_tracking_event_mailgun_id_unique
+#: sql_constraint:mail.tracking.event:0
 msgid "Mailgun event IDs must be unique!"
 msgstr ""
 
@@ -277,13 +245,13 @@ msgid "Register Mailgun webhooks"
 msgstr ""
 
 #. module: mail_tracking_mailgun
-#: code:addons/mail_tracking_mailgun/controllers/main.py:0
+#: code:addons/mail_tracking_mailgun/controllers/main.py:31
 #, python-format
 msgid "Request is too old"
 msgstr ""
 
 #. module: mail_tracking_mailgun
-#: code:addons/mail_tracking_mailgun/controllers/main.py:0
+#: code:addons/mail_tracking_mailgun/controllers/main.py:42
 #, python-format
 msgid "Request was already processed"
 msgstr ""
@@ -304,9 +272,15 @@ msgid "Set Bounced"
 msgstr ""
 
 #. module: mail_tracking_mailgun
-#: code:addons/mail_tracking_mailgun/models/mail_tracking_email.py:0
+#: code:addons/mail_tracking_mailgun/models/mail_tracking_email.py:76
 #, python-format
 msgid "There is no Mailgun API key!"
+msgstr ""
+
+#. module: mail_tracking_mailgun
+#: code:addons/mail_tracking_mailgun/models/mail_tracking_email.py:204
+#, python-format
+msgid "There is no tracked message!"
 msgstr ""
 
 #. module: mail_tracking_mailgun
@@ -327,19 +301,19 @@ msgid "Unset Bounced"
 msgstr ""
 
 #. module: mail_tracking_mailgun
-#: code:addons/mail_tracking_mailgun/models/mail_tracking_email.py:0
+#: code:addons/mail_tracking_mailgun/models/mail_tracking_email.py:166
 #, python-format
 msgid "Wrong database for event!"
 msgstr ""
 
 #. module: mail_tracking_mailgun
-#: code:addons/mail_tracking_mailgun/controllers/main.py:0
+#: code:addons/mail_tracking_mailgun/controllers/main.py:58
 #, python-format
 msgid "Wrong signature"
 msgstr ""
 
 #. module: mail_tracking_mailgun
-#: code:addons/mail_tracking_mailgun/models/res_partner.py:0
+#: code:addons/mail_tracking_mailgun/models/res_partner.py:48
 #, python-format
 msgid ""
 "You need to configure mailgun.validation_key in order to be able to check "
@@ -382,7 +356,10 @@ msgid "pubkey-abcde0123456789abcde0123456789ab"
 msgstr ""
 
 #. module: mail_tracking_mailgun
-#: code:addons/mail_tracking_mailgun/models/res_partner.py:0
+#: code:addons/mail_tracking_mailgun/models/res_partner.py:33
 #, python-format
 msgid "unknown"
 msgstr ""
+
+#~ msgid "Partner"
+#~ msgstr "Partner"

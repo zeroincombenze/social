@@ -9,9 +9,9 @@ class BasePartnerMergeAutomaticWizard(models.TransientModel):
 
     def _merge(self, partner_ids, dst_partner=None, extra_checks=True):
         return super(
-            BasePartnerMergeAutomaticWizard, self.with_context(syncing=True)
+            BasePartnerMergeAutomaticWizard, self.with_context(
+                bypass_dynamic_list_check=True
+            )
         )._merge(
-            partner_ids=partner_ids,
-            dst_partner=dst_partner,
-            extra_checks=extra_checks,
+            partner_ids=partner_ids, dst_partner=dst_partner, extra_checks=extra_checks,
         )

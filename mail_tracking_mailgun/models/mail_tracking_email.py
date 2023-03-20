@@ -3,17 +3,16 @@
 # Copyright 2021 Tecnativa - Jairo Llopis
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-import logging
 from collections import namedtuple
-from datetime import datetime
 from urllib.parse import urljoin
 
 import requests
-
+from datetime import datetime
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import email_split
 
+import logging
 _logger = logging.getLogger(__name__)
 
 MailgunParameters = namedtuple(
@@ -39,9 +38,9 @@ class MailTrackingEmail(models.Model):
     def _country_search(self, country_code):
         country = False
         if country_code:
-            country = self.env["res.country"].search(
-                [("code", "=", country_code.upper())]
-            )
+            country = self.env['res.country'].search([
+                ('code', '=', country_code.upper()),
+            ])
         if country:
             return country.id
         return False
@@ -56,12 +55,12 @@ class MailTrackingEmail(models.Model):
         """
         # Mailgun event type: tracking event type
         equivalents = {
-            "delivered": "delivered",
-            "opened": "open",
-            "clicked": "click",
-            "unsubscribed": "unsub",
-            "complained": "spam",
-            "accepted": "sent",
+            'delivered': 'delivered',
+            'opened': 'open',
+            'clicked': 'click',
+            'unsubscribed': 'unsub',
+            'complained': 'spam',
+            'accepted': 'sent',
             "failed": (
                 "hard_bounce" if event.get("severity") == "permanent" else "soft_bounce"
             ),
@@ -71,13 +70,14 @@ class MailTrackingEmail(models.Model):
 
     @api.model
     def _mailgun_values(self):
-        icp = self.env["ir.config_parameter"].sudo()
-        api_key = icp.get_param("mailgun.apikey")
+        icp = self.env['ir.config_parameter'].sudo()
+        api_key = icp.get_param('mailgun.apikey')
         if not api_key:
-            raise ValidationError(_("There is no Mailgun API key!"))
-        api_url = icp.get_param("mailgun.api_url", "https://api.mailgun.net/v3")
-        catchall_domain = icp.get_param("mail.catchall.domain")
-        domain = icp.get_param("mailgun.domain", catchall_domain)
+            raise ValidationError(_('There is no Mailgun API key!'))
+        api_url = icp.get_param(
+            'mailgun.api_url', 'https://api.mailgun.net/v3')
+        catchall_domain = icp.get_param('mail.catchall.domain')
+        domain = icp.get_param('mailgun.domain', catchall_domain)
         if not domain:
             raise ValidationError(_("A Mailgun domain value is needed!"))
         validation_key = icp.get_param("mailgun.validation_key")
@@ -95,41 +95,38 @@ class MailTrackingEmail(models.Model):
 
     def _mailgun_metadata(self, mailgun_event_type, event, metadata):
         # Get Mailgun timestamp when found
-        ts = event.get("timestamp", False)
+        ts = event.get('timestamp', False)
         try:
             ts = float(ts)
         except Exception:
             ts = False
         if ts:
             dt = datetime.utcfromtimestamp(ts)
-            metadata.update(
-                {
-                    "timestamp": ts,
-                    "time": fields.Datetime.to_string(dt),
-                    "date": fields.Date.to_string(dt),
-                    "mailgun_id": event.get("id", False),
-                }
-            )
+            metadata.update({
+                'timestamp': ts,
+                'time': fields.Datetime.to_string(dt),
+                'date': fields.Date.to_string(dt),
+                'mailgun_id': event.get('id', False)
+            })
         # Common field mapping
         mapping = {
-            "recipient": "recipient",
-            "ip": "ip",
-            "user_agent": "user-agent",
-            "os_family": "client-os",
-            "ua_family": "client-name",
-            "ua_type": "client-type",
-            "url": "url",
+            'recipient': 'recipient',
+            'ip': 'ip',
+            'user_agent': 'user-agent',
+            'os_family': 'client-os',
+            'ua_family': 'client-name',
+            'ua_type': 'client-type',
+            'url': 'url',
         }
         for k, v in mapping.items():
             if event.get(v, False):
                 metadata[k] = event[v]
         # Special field mapping
-        metadata.update(
-            {
-                "mobile": event.get("device-type") in {"mobile", "tablet"},
-                "user_country_id": self._country_search(event.get("country", False)),
-            }
-        )
+        metadata.update({
+            'mobile': event.get('device-type') in {'mobile', 'tablet'},
+            'user_country_id': self._country_search(
+                event.get('country', False)),
+        })
         # Mapping for special events
         if mailgun_event_type == "failed":
             delivery_status = event.get("delivery-status", {})
@@ -149,14 +146,13 @@ class MailTrackingEmail(models.Model):
                     "error_details": reject.get("description", False),
                 }
             )
-        elif mailgun_event_type == "complained":
-            metadata.update(
-                {
-                    "error_type": "spam",
-                    "error_description": "Recipient '%s' mark this email as spam"
-                    % event.get("recipient", False),
-                }
-            )
+        elif mailgun_event_type == 'complained':
+            metadata.update({
+                'error_type': 'spam',
+                'error_description':
+                    "Recipient '%s' mark this email as spam" %
+                    event.get('recipient', False),
+            })
         return metadata
 
     @api.model
@@ -166,7 +162,7 @@ class MailTrackingEmail(models.Model):
         In https://documentation.mailgun.com/en/latest/api-events.html#event-structure
         you can read the event payload format as obtained from webhooks or calls to API.
         """
-        if event_data["user-variables"]["odoo_db"] != self.env.cr.dbname:
+        if event_data['user-variables']['odoo_db'] != self.env.cr.dbname:
             raise ValidationError(_("Wrong database for event!"))
         # Do nothing if event was already processed
         mailgun_id = event_data["id"]
@@ -180,7 +176,7 @@ class MailTrackingEmail(models.Model):
         message_id = event_data["message"]["headers"]["message-id"]
         recipient = event_data["recipient"]
         tracking_email = self.browse(
-            int(event_data["user-variables"]["tracking_email_id"])
+            int(event_data['user-variables']['tracking_email_id'])
         )
         mailgun_event_type = event_data["event"]
         # Process event
@@ -195,6 +191,7 @@ class MailTrackingEmail(models.Model):
         )
         tracking_email.event_create(state, metadata)
 
+    @api.multi
     def action_manual_check_mailgun(self):
         """Manual check against Mailgun API
 
@@ -202,8 +199,11 @@ class MailTrackingEmail(models.Model):
         https://documentation.mailgun.com/en/latest/api-events.html
         """
         api_key, api_url, domain, *__ = self._mailgun_values()
-        for tracking in self.filtered("message_id"):
-            message_id = tracking.message_id.replace("<", "").replace(">", "")
+        for tracking in self:
+            if not tracking.mail_message_id:
+                raise UserError(_('There is no tracked message!'))
+            message_id = tracking.mail_message_id.message_id.replace(
+                "<", "").replace(">", "")
             events = []
             url = urljoin(api_url, "/v3/%s/events" % domain)
             params = {

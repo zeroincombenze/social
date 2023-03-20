@@ -5,7 +5,6 @@ import logging
 from urllib.parse import urljoin
 
 import requests
-
 from odoo import fields, models
 
 _logger = logging.getLogger(__name__)
@@ -84,7 +83,7 @@ class ResConfigSettings(models.TransientModel):
             auth=("api", params.api_key),
         )
         webhooks.raise_for_status()
-        for event, data in webhooks.json()["webhooks"].items():
+        for event, data in webhooks.json()['webhooks'].items():
             # Modern webhooks return a list of URLs; old ones just one
             urls = []
             if "urls" in data:

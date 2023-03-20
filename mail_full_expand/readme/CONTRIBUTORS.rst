@@ -2,5 +2,3 @@
 
   * Jairo Llopis
   * Ernesto Tejeda
-
-* Chandresh Thakkar <chandresh.thakkar.serpentcs@gmail.com>

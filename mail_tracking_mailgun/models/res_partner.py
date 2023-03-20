@@ -7,38 +7,36 @@
 from urllib.parse import urljoin
 
 import requests
-
 from odoo import _, api, models
 from odoo.exceptions import UserError
 
 
 class ResPartner(models.Model):
-    _inherit = "res.partner"
+    _inherit = 'res.partner'
 
+    @api.multi
     def email_bounced_set(self, tracking_emails, reason, event=None):
-        res = super().email_bounced_set(tracking_emails, reason, event=event)
+        res = super(ResPartner, self).email_bounced_set(
+            tracking_emails, reason, event=event)
         self._email_bounced_set(reason, event)
         return res
 
+    @api.multi
     def _email_bounced_set(self, reason, event):
         for partner in self:
             if not partner.email:
                 continue
-            event = event or self.env["mail.tracking.event"]
+            event = event or self.env['mail.tracking.event']
             event_str = """
                 <a href="#"
                    data-oe-model="mail.tracking.event" data-oe-id="%d">%s</a>
-            """ % (
-                event.id or 0,
-                event.id or _("unknown"),
-            )
-            body = _("Email has been bounced: %s\nReason: %s\nEvent: %s") % (
-                partner.email,
-                reason,
-                event_str,
-            )
+            """ % (event.id or 0, event.id or _('unknown'))
+            body = _('Email has been bounced: %s\n'
+                     'Reason: %s\n'
+                     'Event: %s') % (partner.email, reason, event_str)
             partner.message_post(body=body)
 
+    @api.multi
     def check_email_validity(self):
         """
         Checks mailbox validity with Mailgun's API
@@ -47,79 +45,55 @@ class ResPartner(models.Model):
         """
         params = self.env["mail.tracking.email"]._mailgun_values()
         if not params.validation_key:
-            raise UserError(
-                _(
-                    "You need to configure mailgun.validation_key"
-                    " in order to be able to check mails validity"
-                )
-            )
-        for partner in self.filtered("email"):
+            raise UserError(_('You need to configure mailgun.validation_key'
+                              ' in order to be able to check mails validity'))
+        for partner in self.filtered('email'):
             res = requests.get(
                 urljoin(params.api_url, "/v3/address/validate"),
                 auth=("api", params.validation_key),
-                params={"address": partner.email, "mailbox_verification": True},
-            )
-            if (
-                not res
-                or res.status_code != 200
-                and not self.env.context.get("mailgun_auto_check")
-            ):
-                raise UserError(
-                    _(
-                        "Error %s trying to check mail" % res.status_code
-                        or "of connection"
-                    )
-                )
+                params={
+                    "address": partner.email,
+                    "mailbox_verification": True,
+                })
+            if not res or res.status_code != 200 and not self.env.context.get(
+                    'mailgun_auto_check'):
+                raise UserError(_(
+                    'Error %s trying to '
+                    'check mail' % res.status_code or 'of connection'))
             content = res.json()
-            if "mailbox_verification" not in content:
-                if not self.env.context.get("mailgun_auto_check"):
+            if 'mailbox_verification' not in content:
+                if not self.env.context.get('mailgun_auto_check'):
                     raise UserError(
-                        _(
-                            "Mailgun Error. Mailbox verification value wasn't"
-                            " returned"
-                        )
-                    )
+                        _("Mailgun Error. Mailbox verification value wasn't"
+                          " returned"))
             # Not a valid address: API sets 'is_valid' as False
             # and 'mailbox_verification' as None
-            if not content["is_valid"]:
+            if not content['is_valid']:
                 partner.email_bounced = True
-                body = (
-                    _(
-                        "%s is not a valid email address. Please check it"
-                        " in order to avoid sending issues"
-                    )
-                    % partner.email
-                )
-                if not self.env.context.get("mailgun_auto_check"):
+                body = _('%s is not a valid email address. Please check it'
+                         ' in order to avoid sending issues') % partner.email
+                if not self.env.context.get('mailgun_auto_check'):
                     raise UserError(body)
                 partner.message_post(body=body)
             # If the mailbox is not valid API returns 'mailbox_verification'
             # as a string with value 'false'
-            if content["mailbox_verification"] == "false":
+            if content['mailbox_verification'] == 'false':
                 partner.email_bounced = True
-                body = (
-                    _(
-                        "%s failed the mailbox verification. Please check it"
-                        " in order to avoid sending issues"
-                    )
-                    % partner.email
-                )
-                if not self.env.context.get("mailgun_auto_check"):
+                body = _('%s failed the mailbox verification. Please check it'
+                         ' in order to avoid sending issues') % partner.email
+                if not self.env.context.get('mailgun_auto_check'):
                     raise UserError(body)
                 partner.message_post(body=body)
             # If Mailgun can't complete the validation request the API returns
             # 'mailbox_verification' as a string set to 'unknown'
-            if content["mailbox_verification"] == "unknown":
-                if not self.env.context.get("mailgun_auto_check"):
+            if content['mailbox_verification'] == 'unknown':
+                if not self.env.context.get('mailgun_auto_check'):
                     raise UserError(
-                        _(
-                            "%s couldn't be verified. Either the request couln't"
-                            " be completed or the mailbox provider doesn't "
-                            "support email verification"
-                        )
-                        % (partner.email)
-                    )
+                        _("%s couldn't be verified. Either the request couldn't"
+                          " be completed or the mailbox provider doesn't "
+                          "support email verification") % (partner.email))
 
+    @api.multi
     def check_email_bounced(self):
         """
         Checks if the partner's email is in Mailgun's bounces list
@@ -127,8 +101,7 @@ class ResPartner(models.Model):
         https://documentation.mailgun.com/en/latest/api-suppressions.html
         """
         api_key, api_url, domain, *__ = self.env[
-            "mail.tracking.email"
-        ]._mailgun_values()
+            'mail.tracking.email']._mailgun_values()
         for partner in self:
             res = requests.get(
                 urljoin(api_url, "/v3/%s/bounces/%s" % (domain, partner.email)),
@@ -139,6 +112,7 @@ class ResPartner(models.Model):
             elif res.status_code == 404 and partner.email_bounced:
                 partner.email_bounced = False
 
+    @api.multi
     def force_set_bounced(self):
         """
         Forces partner's email into Mailgun's bounces list
@@ -146,16 +120,16 @@ class ResPartner(models.Model):
         https://documentation.mailgun.com/en/latest/api-suppressions.html
         """
         api_key, api_url, domain, *__ = self.env[
-            "mail.tracking.email"
-        ]._mailgun_values()
+            'mail.tracking.email']._mailgun_values()
         for partner in self:
             res = requests.post(
                 urljoin(api_url, "/v3/%s/bounces" % domain),
                 auth=("api", api_key),
-                data={"address": partner.email},
-            )
-            partner.email_bounced = res.status_code == 200 and not partner.email_bounced
+                data={'address': partner.email})
+            partner.email_bounced = (
+                res.status_code == 200 and not partner.email_bounced)
 
+    @api.multi
     def force_unset_bounced(self):
         """
         Forces partner's email deletion from Mailgun's bounces list
@@ -163,8 +137,7 @@ class ResPartner(models.Model):
         https://documentation.mailgun.com/en/latest/api-suppressions.html
         """
         api_key, api_url, domain, *__ = self.env[
-            "mail.tracking.email"
-        ]._mailgun_values()
+            'mail.tracking.email']._mailgun_values()
         for partner in self:
             res = requests.delete(
                 urljoin(api_url, "/v3/%s/bounces/%s" % (domain, partner.email)),
@@ -175,19 +148,20 @@ class ResPartner(models.Model):
 
     def _autocheck_partner_email(self):
         for partner in self:
-            partner.with_context(mailgun_auto_check=True).check_email_validity()
+            partner.with_context(
+                mailgun_auto_check=True).check_email_validity()
 
     @api.model
     def create(self, vals):
-        if "email" in vals and self.env["ir.config_parameter"].sudo().get_param(
-            "mailgun.auto_check_partner_email"
-        ):
+        if ('email' in vals and
+                self.env['ir.config_parameter'].sudo().get_param(
+                    'mailgun.auto_check_partner_email')):
             self._autocheck_partner_email()
-        return super().create(vals)
+        return super(ResPartner, self).create(vals)
 
     def write(self, vals):
-        if "email" in vals and self.env["ir.config_parameter"].sudo().get_param(
-            "mailgun.auto_check_partner_email"
-        ):
+        if ('email' in vals and
+                self.env['ir.config_parameter'].sudo().get_param(
+                    'mailgun.auto_check_partner_email')):
             self._autocheck_partner_email()
-        return super().write(vals)
+        return super(ResPartner, self).write(vals)

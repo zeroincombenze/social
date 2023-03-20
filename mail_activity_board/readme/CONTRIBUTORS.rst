@@ -2,14 +2,6 @@
 
   * David Juaneda
 
-* `ForgeFlow <https://www.forgeflow.com>`_:
+* `Eficent <https://www.eficent.com>`_:
 
-  * Miquel Raïch (miquel.raich@forgeflow.com)
-
-* `Pesol <https://www.pesol.es>`_:
-
-  * Pedro Gonzalez (pedro.gonzalez@pesol.es)
-
-* `ACSONE SA/NV <https://www.acsone.eu>`_
-
-  * Laurent Mignon <laurent.mignon@acsone.eu>
+  * Miquel Raïch (miquel.raich@eficent.com)

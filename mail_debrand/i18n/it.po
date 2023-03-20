@@ -1,12 +1,12 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* mail_debrand
+#	* mail_debrand
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 14.0\n"
+"Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2022-11-18 13:44+0000\n"
+"PO-Revision-Date: 2022-12-30 12:45+0000\n"
 "Last-Translator: Francesco Foresti <francesco.foresti@ooops404.com>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -17,35 +17,29 @@ msgstr ""
 "X-Generator: Weblate 4.14.1\n"
 
 #. module: mail_debrand
-#: code:addons/mail_debrand/tests/test_mail_debrand_digest.py:0
+#: model:ir.model,name:mail_debrand.model_mail_template
+msgid "Email Templates"
+msgstr "Modelli Email"
+
+#. module: mail_debrand
+#: model:ir.model,name:mail_debrand.model_mail_thread
+msgid "Email Thread"
+msgstr "Discussione e-mail"
+
+#. module: mail_debrand
+#: code:addons/mail_debrand/models/mail_template.py:15
 #, python-format
-msgid "Connect"
-msgstr ""
+msgid "Odoo"
+msgstr "Odoo"
 
 #. module: mail_debrand
-#: model:ir.model.fields,field_description:mail_debrand.field_mail_mail__display_name
-#: model:ir.model.fields,field_description:mail_debrand.field_mail_render_mixin__display_name
-msgid "Display Name"
-msgstr "Nome da visualizzare"
+#: code:addons/mail_debrand/models/mail_template.py:19
+#, python-format
+msgid "Powered by"
+msgstr "Fornito da"
 
 #. module: mail_debrand
-#: model:ir.model.fields,field_description:mail_debrand.field_mail_mail__id
-#: model:ir.model.fields,field_description:mail_debrand.field_mail_render_mixin__id
-msgid "ID"
-msgstr "ID"
-
-#. module: mail_debrand
-#: model:ir.model.fields,field_description:mail_debrand.field_mail_mail____last_update
-#: model:ir.model.fields,field_description:mail_debrand.field_mail_render_mixin____last_update
-msgid "Last Modified on"
-msgstr "Ultima modifica il"
-
-#. module: mail_debrand
-#: model:ir.model,name:mail_debrand.model_mail_render_mixin
-msgid "Mail Render Mixin"
-msgstr ""
-
-#. module: mail_debrand
-#: model:ir.model,name:mail_debrand.model_mail_mail
-msgid "Outgoing Mails"
-msgstr "Posta in uscita"
+#: code:addons/mail_debrand/models/mail_template.py:14
+#, python-format
+msgid "using"
+msgstr "usando"

@@ -1,12 +1,12 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* mail_inline_css
+#	* mail_inline_css
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 14.0\n"
+"Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: \n"
+"Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,11 +16,6 @@ msgstr ""
 #. module: mail_inline_css
 #: model:mail.template,subject:mail_inline_css.email_template_demo
 msgid "Demo email inline styles"
-msgstr ""
-
-#. module: mail_inline_css
-#: model:ir.model.fields,field_description:mail_inline_css.field_mail_template__display_name
-msgid "Display Name"
 msgstr ""
 
 #. module: mail_inline_css
@@ -34,23 +29,12 @@ msgid "Hello"
 msgstr ""
 
 #. module: mail_inline_css
-#: model:ir.model.fields,field_description:mail_inline_css.field_mail_template__id
-msgid "ID"
-msgstr ""
-
-#. module: mail_inline_css
-#: model:ir.model.fields,field_description:mail_inline_css.field_mail_template____last_update
-msgid "Last Modified on"
-msgstr ""
-
-#. module: mail_inline_css
 #: model_terms:ir.ui.view,arch_db:mail_inline_css.demo_email_hello
-msgid ""
-"This e-mail styles are inline rendered although its template defines styles "
-"as embedded CSS!"
+msgid "This e-mail styles are inline rendered although its template defines styles as embedded CSS!"
 msgstr ""
 
 #. module: mail_inline_css
 #: model_terms:ir.ui.view,arch_db:mail_inline_css.demo_email_hello
 msgid "www.example.com"
 msgstr ""
+

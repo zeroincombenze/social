@@ -1,7 +1,7 @@
 # Copyright 2017 Tecnativa - David Vidal
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import fields, models
+from odoo import models, fields
 
 
 class MailTrackingEvent(models.Model):
@@ -19,6 +19,7 @@ class MailTrackingEvent(models.Model):
     )
 
     def _process_data(self, tracking_email, metadata, event_type, state):
-        res = super()._process_data(tracking_email, metadata, event_type, state)
-        res.update({"mailgun_id": metadata.get("mailgun_id", False)})
+        res = super(MailTrackingEvent, self)._process_data(
+            tracking_email, metadata, event_type, state)
+        res.update({'mailgun_id': metadata.get('mailgun_id', False)})
         return res

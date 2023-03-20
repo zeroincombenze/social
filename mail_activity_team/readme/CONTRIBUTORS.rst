@@ -1,8 +1,9 @@
-* `ForgeFlow <https://www.forgeflow.com>`_:
+* `Eficent <https://www.eficent.com>`_:
 
-  * Jordi Ballester Alomar (jordi.ballester@forgeflow.com)
-  * Miquel Raïch (miquel.raich@forgeflow.com)
-* Pedro Gonzalez (pedro.gonzalez@pesol.es)
+  * Jordi Ballester Alomar (jordi.ballester@eficent.com)
+  * Miquel Raïch (miquel.raich@eficent.com)
+
+* Enric Tobella <etobella@creublanca.es>
 * `Tecnativa <https://www.tecnativa.com>`_:
 
   * David Vidal

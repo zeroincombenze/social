@@ -1,4 +1,4 @@
-# Copyright 2016 ForgeFlow S.L.
+# Copyright 2016 Eficent Business and IT Consulting Services S.L.
 # Copyright 2016 Serpent Consulting Services Pvt. Ltd.
 # Copyright 2017 LasLabs Inc.
 # Copyright 2018 Tecnativa - Vicent Cubells
@@ -8,7 +8,7 @@ from odoo import fields, models
 
 
 class TrgmIndex(models.Model):
-    _inherit = "trgm.index"
+    _inherit = 'trgm.index'
 
     # We take advantage of field inheritance to redefine help instead of do
     # inheritance in views that throws an error

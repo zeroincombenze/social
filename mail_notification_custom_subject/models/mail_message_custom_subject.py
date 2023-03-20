@@ -1,7 +1,7 @@
 # Copyright 2020 Tecnativa - João Marques
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import fields, models
+from odoo import _, fields, models
 
 
 class MailMessageCustomSubject(models.Model):
@@ -14,7 +14,6 @@ class MailMessageCustomSubject(models.Model):
         string="Model",
         required=True,
         help="Model where this template applies",
-        ondelete="cascade",
     )
     subtype_ids = fields.Many2many(
         comodel_name="mail.message.subtype",
@@ -28,9 +27,9 @@ class MailMessageCustomSubject(models.Model):
     )
     position = fields.Selection(
         selection=[
-            ("append_before", "Append Before"),
-            ("append_after", "Append After"),
-            ("replace", "Replace"),
+            ("append_before", _("Append Before")),
+            ("append_after", _("Append After")),
+            ("replace", _("Replace")),
         ],
         string="Position",
         default="replace",
