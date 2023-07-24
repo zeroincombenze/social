@@ -21,12 +21,13 @@ Available addons
 ----------------
 addon | version | maintainers | summary
 --- | --- | --- | ---
-[base_search_mail_content](base_search_mail_content/) | 14.0.1.0.0 |  | Base Search Mail Content
+[base_search_mail_content](base_search_mail_content/) | 14.0.1.0.1 |  | Base Search Mail Content
 [email_template_qweb](email_template_qweb/) | 14.0.1.0.1 |  | Use the QWeb templating mechanism for emails
 [mail_activity_board](mail_activity_board/) | 14.0.1.1.0 |  | Add Activity Boards
 [mail_activity_creator](mail_activity_creator/) | 14.0.1.0.0 |  | Show activities creator
 [mail_activity_done](mail_activity_done/) | 14.0.1.0.2 |  | Mail Activity Done
 [mail_activity_partner](mail_activity_partner/) | 14.0.1.0.0 |  | Add Partner to Activities
+[mail_activity_reply_creator](mail_activity_reply_creator/) | 14.0.1.0.1 |  | Assign new to its creator
 [mail_activity_team](mail_activity_team/) | 14.0.1.2.0 |  | Add Teams to Activities
 [mail_activity_unlink_log](mail_activity_unlink_log/) | 14.0.1.0.0 |  | Leave a message when an activity is unlinked
 [mail_allow_portal_internal_note](mail_allow_portal_internal_note/) | 14.0.1.0.2 |  | Portal users can access internal messages related to own or other companies
@@ -56,7 +57,8 @@ addon | version | maintainers | summary
 [mail_send_copy](mail_send_copy/) | 14.0.1.0.1 |  | Send to you a copy of each mail sent by Odoo
 [mail_server_by_user](mail_server_by_user/) | 14.0.1.0.0 | [![ChrisOForgeFlow](https://github.com/ChrisOForgeFlow.png?size=30px)](https://github.com/ChrisOForgeFlow) | Email Server By User
 [mail_show_follower](mail_show_follower/) | 14.0.1.1.0 |  | Show CC document followers in mails.
-[mail_tracking](mail_tracking/) | 14.0.3.1.0 |  | Email tracking system for all mails sent
+[mail_template_multi_attachment](mail_template_multi_attachment/) | 14.0.1.0.0 |  | Module that allows to generate multi attachments on an email template.
+[mail_tracking](mail_tracking/) | 14.0.3.1.2 |  | Email tracking system for all mails sent
 [mail_tracking_mailgun](mail_tracking_mailgun/) | 14.0.2.1.0 |  | Mail tracking and Mailgun webhooks integration
 [mail_tracking_mass_mailing](mail_tracking_mass_mailing/) | 14.0.1.1.0 |  | Improve mass mailing email tracking
 [mass_mailing_company_newsletter](mass_mailing_company_newsletter/) | 14.0.1.0.1 | [![ivantodorovich](https://github.com/ivantodorovich.png?size=30px)](https://github.com/ivantodorovich) | Easily manage partner's subscriptions to your main mailing list.
